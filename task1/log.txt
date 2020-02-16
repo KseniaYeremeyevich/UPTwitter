@@ -1,0 +1,11 @@
+commit 0c913d85ea986f0f7d5edb713c2d36ea3311eb16 (HEAD -> master)
+Author: Ksenia Yeremeyevich <k.yeremeyevich@gmail.com>
+Date:   Sun Feb 16 21:41:19 2020 +0300
+
+    add status.txt
+
+commit d804c4af1d3d56f89d872a4dc9b8d43809ca0b34
+Author: Ksenia Yeremeyevich <k.yeremeyevich@gmail.com>
+Date:   Sun Feb 16 21:33:17 2020 +0300
+
+    add .gitignore
