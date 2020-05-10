@@ -1,0 +1,94 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+
+  <display-name>Archetype Created Web Application</display-name>
+
+  <servlet>
+    <servlet-name>StatusServlet</servlet-name>
+    <servlet-class>StatusServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>StatusServlet</servlet-name>
+    <url-pattern>/status</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>GetNameServlet</servlet-name>
+    <servlet-class>GetNameServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>GetNameServlet</servlet-name>
+    <url-pattern>/get</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>CheckServlet</servlet-name>
+    <servlet-class>CheckServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>CheckServlet</servlet-name>
+    <url-pattern>/check</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>PageServlet</servlet-name>
+    <servlet-class>PageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>PageServlet</servlet-name>
+    <url-pattern>/page</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>Test1Servlet</servlet-name>
+    <servlet-class>Test1Servlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Test1Servlet</servlet-name>
+    <url-pattern>/test1</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>Test2Servlet</servlet-name>
+    <servlet-class>Test2Servlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Test2Servlet</servlet-name>
+    <url-pattern>/test2</url-pattern>
+  </servlet-mapping>
+
+  <filter>
+    <filter-name>FilterServlet</filter-name>
+    <filter-class>FilterServlet</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>FilterServlet</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>Tweets</servlet-name>
+    <servlet-class>Tweets</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Tweets</servlet-name>
+    <url-pattern>/tweets/*</url-pattern>
+  </servlet-mapping>
+
+</web-app>
