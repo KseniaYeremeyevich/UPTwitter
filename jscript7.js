@@ -1,8 +1,10 @@
 class TweetList {
     _tweets = [];
+    _currentId;
 
     constructor(tweets) {
         this._tweets = tweets;
+        this._currentId = this._tweets.length;
     }
 
     getPage(skip = 0, top = 10, filterConfig = undefined) {
@@ -23,7 +25,7 @@ class TweetList {
                         resultPosts = resultPosts.filter(post => post.createdAt <= new Date(filterConfig.dateTo));
                         break;
                     case 'username':
-                        resultPosts = resultPosts.filter(post => post.author === filterConfig.username);
+                        resultPosts = resultPosts.filter(post => post.author.includes(filterConfig.username));
                         break;
                     case 'tags':
                         for (let i = 0; i < filterConfig.tags.length; i++) {
@@ -56,20 +58,12 @@ class TweetList {
 
     static _validateProperty(post, property) {
         switch (property) {
-            case 'id':
-                return (typeof post.id === 'string');
             case 'description':
                 return (typeof post.description === 'string') && (post.description.length < 280);
-            case 'createdAt':
-                return true;
-            case 'author':
-                return true;
             case 'photoLink':
                 return (typeof post.photoLink === 'string');
             case 'hashTags':
                 return (post.hashTags) && (post.hashTags.every(tag => (typeof tag === 'string') && (tag.length < 20)));
-            case 'likes':
-                return (post.likes) && (post.likes.every(like => typeof like === 'string'));
             default:
                 return false;
         }
@@ -78,13 +72,12 @@ class TweetList {
     static validate(post) {
         return TweetList._validateProperty(post, 'description') &&
             TweetList._validateProperty(post, 'photoLink') &&
-            TweetList._validateProperty(post, 'hashTags') &&
-            TweetList._validateProperty(post, 'likes');
+            TweetList._validateProperty(post, 'hashTags');
     }
 
     add (post) {
         const date = new Date();
-        const id = String(this._tweets.length + 1);
+        const id = String(this._currentId + 1);
         let newPost = {
             id,
             description: post.description,
@@ -96,19 +89,23 @@ class TweetList {
         };
         if(TweetList.validate(newPost)){
             this._tweets.push(newPost);
+            this._currentId = this._currentId + 1;
             return true;
         }
         return false;
     }
 
     edit(id, post) {
-        let editPost = this.get(id);
+        let edPost = this.get(id);
+        let flag = false;
 
-        for(let key in post) {
-            editPost[key] = post[key];
+        for (let key in post) {
+            if (TweetList._validateProperty(post, key)) {
+                edPost[key] = post[key];
+                flag = true;
+            } else flag = false;
         }
-
-        return TweetList.validate(editPost);
+        return flag;
     }
 
     remove(id) {
@@ -136,7 +133,7 @@ class TweetList {
 
 }
 
-    let tweets = new TweetList([
+let tweets = new TweetList([
     {
         id: '1',
         description: 'Oh, I know that they’ll be better days\n' +
@@ -450,6 +447,10 @@ console.log('Posts of one author');
 console.log(tweets.getPage(0, 10, {username: 'April'}));
 console.log('\n');
 
+console.log('Posts of one author (not full name)');
+console.log(tweets.getPage(0, 10, {username: 'Ks'}));
+console.log('\n');
+
 console.log('Posts from 6 april');
 console.log(tweets.getPage(0, 10, {dateFrom: '2020-04-06'}));
 console.log('\n');
@@ -508,6 +509,16 @@ console.log(tweets.edit('15', {photoLink: 'https://github.com/KseniaYeremeyevich
 console.log(tweets.get('15'));
 console.log('\n');
 
+console.log('Edit post with id = 15');
+console.log(tweets.edit('15', {hashTags: [ 'summersummersummersummer']}));
+console.log(tweets.get('15'));
+console.log('\n');
+
+console.log('Edit post with id = 10');
+console.log(tweets.edit('10', {photoLink: 'https://github.com/KseniaYeremeyevich/UPTwitter', hashTags: [ 'spring' , 'minsk']}));
+console.log(tweets.get('10'));
+console.log('\n');
+
 console.log('REMOVE POST function');
 console.log('\n');
 
@@ -559,6 +570,7 @@ let newTweets = [
 ];
 
 console.log(tweets.addAll(newTweets));
+console.log('Page after adding');
 console.log(tweets.getPage(0 , 5));
 console.log('\n');
 
