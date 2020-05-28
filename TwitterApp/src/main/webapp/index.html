@@ -2,19 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel = "stylesheet" type = "text/css" href="resources\css\styles.css">
+    <link rel ="stylesheet" type = "text/css" href="resources/css/styles.css">
+    <script src="resources/js/jscript7.js"></script>
     <title> MyApp</title>
 </head>
 <body>
 
-<header>
-    <img class="logo" src="resources\pictures\logo.png" alt="logo">
-    <img class="profile_image" src="resources\pictures\profile.jpg" alt="profile image">
-    <div class="username"> USERNAME </div>
-    <button class="log_out_button"> Log Out </button>
-    <button class="add_post_button"><img class="button_add_image" src="resources\pictures\plus1.png" alt="add new post"> </button>
-</header>
+<header id = "header">
+    <img class="logo" src="resources/pictures/logo.png" alt="logo">
 
+    <template id="log_in">
+        <img class="profile_image" src="resources/pictures/profile.jpg" alt="profile image">
+        <div class="username" data-target="header_username"></div>
+        <button class="log_out_button"> Log Out </button>
+        <button class="add_post_button_out"><div class="add_post_button_text">+</div> </button>
+    </template>
+
+    <template id="log_out">
+        <button class="log_in_button"> Log In </button>
+        <button class="add_post_button_in"><div class="add_post_button_text">+</div> </button>
+    </template>
+
+</header>
 
 <div class = "filter_panel">
     <div class="filter_block_filters">
@@ -23,9 +32,9 @@
     <div class="filter_block_data">
         <div class="filter_panel_text">DATA</div>
         <div class="data_text_from">FROM</div>
-        <input class="data_box_first" type="date" value="01.01.1990">
+        <input class="data_box_first" type="date" value="1990-01-01">
         <div class="data_text_to">TO</div>
-        <input class="data_box_second" type="date" value="20.02.2020">
+        <input class="data_box_second" type="date" value="2020-06-30">
     </div>
     <div class="filter_block_username">
         <div class="filter_panel_text">USERNAME</div>
@@ -38,173 +47,59 @@
     <button class="apply_button">APPLY</button>
 </div>
 
-<main>
-    <div class="new_post">
-        <img class="profile_image_new_post" src="resources\pictures\profile.jpg" alt="profile image">
-        <div class="username_new_post">USERNAME</div>
-        <button class="new_post_button">ADD NEW POST</button>
-    </div>
-    <div class="post">
-        <img class="profile_image_post" src="resources\pictures\profile.jpg" alt="profile image">
-        <div class="username_post">USERNAME</div>
-        <div class="post_data">data / time</div>
-        <img class="photo_post" src = "resources\pictures\winter.jpg" alt = "photo post">
-        <div class="post_text">
-            Text:_______________________________________________
-            </br>___________________________________________________
-        </div>
-        <div class="post_tags">
-            Tags:#______________________________________________
-        </div>
-        <img class= "like_icon" src="resources\pictures\like.png">
-        <img class="delete_icon" src="resources\pictures\delete.png">
-        <img class="edit_icon" src="resources\pictures\edit.png">
-    </div>
+<main id="posts_container">
 
-    <div class="post">
-        <img class="profile_image_post" src="resources\pictures\camera.png" alt="profile image">
-        <div class="username_post">USERNAME</div>
-        <div class="post_data">data / time</div>
-        <img class="photo_post" src = "resources\pictures\landscape.jpg" alt = "photo post">
-        <div class="post_text">
-            Text:_______________________________________________
-            </br>___________________________________________________
+    <template  id="template_new_post">
+        <div class="new_post">
+            <img class="profile_image_new_post" src="resources/pictures/profile.jpg" alt="profile image">
+            <div class="username_new_post" data-target="new_post_username"></div>
+            <button class="new_post_button">ADD NEW POST</button>
         </div>
-        <div class="post_tags">
-            Tags:#______________________________________________
-        </div>
-        <img class= "like_icon" src="resources\pictures\like.png">
-    </div>
+    </template>
 
-    <div class="post">
-        <img class="profile_image_post" src="resources\pictures\profile.jpg" alt="profile image">
-        <div class="username_post">USERNAME</div>
-        <div class="post_data">data / time</div>
-        <img class="photo_post" src = "resources\pictures\winter.jpg" alt = "photo post">
-        <div class="post_text">
-            Text:_______________________________________________
-            </br>___________________________________________________
-        </div>
-        <div class="post_tags">
-            Tags:#______________________________________________
-        </div>
-        <img class= "like_icon" src="resources\pictures\like.png">
-        <img class="delete_icon" src="resources\pictures\delete.png">
-        <img class="edit_icon" src="resources\pictures\edit.png">
-    </div>
+    <template id="template_post">
+        <div class="post" id="not_my">
+            <img class="profile_image_post" src="resources/pictures/profile.jpg" alt="profile image">
 
-    <div class="post">
-        <img class="profile_image_post" src="resources\pictures\camera.png" alt="profile image">
-        <div class="username_post">USERNAME</div>
-        <div class="post_data">data / time</div>
-        <img class="photo_post" src = "resources\pictures\landscape.jpg" alt = "photo post">
-        <div class="post_text">
-            Text:_______________________________________________
-            </br>___________________________________________________
-        </div>
-        <div class="post_tags">
-            Tags:#______________________________________________
-        </div>
-        <img class= "like_icon" src="resources\pictures\like.png">
-    </div>
+            <div class="post_text" data-target="description"></div>
 
-    <div class="post">
-        <img class="profile_image_post" src="resources\pictures\profile.jpg" alt="profile image">
-        <div class="username_post">USERNAME</div>
-        <div class="post_data">data / time</div>
-        <img class="photo_post" src = "resources\pictures\winter.jpg" alt = "photo post">
-        <div class="post_text">
-            Text:_______________________________________________
-            </br>___________________________________________________
-        </div>
-        <div class="post_tags">
-            Tags:#______________________________________________
-        </div>
-        <img class= "like_icon" src="resources\pictures\like.png">
-        <img class="delete_icon" src="resources\pictures\delete.png">
-        <img class="edit_icon" src="resources\pictures\edit.png">
-    </div>
+            <div class="post_data" data-target="createdAt"></div>
 
-    <div class="post">
-        <img class="profile_image_post" src="resources\pictures\camera.png" alt="profile image">
-        <div class="username_post">USERNAME</div>
-        <div class="post_data">data / time</div>
-        <img class="photo_post" src = "resources\pictures\landscape.jpg" alt = "photo post">
-        <div class="post_text">
-            Text:_______________________________________________
-            </br>___________________________________________________
-        </div>
-        <div class="post_tags">
-            Tags:#______________________________________________
-        </div>
-        <img class= "like_icon" src="resources\pictures\like.png">
-    </div>
+            <div class="username_post" data-target="author"></div>
 
-    <div class="post">
-        <img class="profile_image_post" src="resources\pictures\profile.jpg" alt="profile image">
-        <div class="username_post">USERNAME</div>
-        <div class="post_data">data / time</div>
-        <img class="photo_post" src = "resources\pictures\winter.jpg" alt = "photo post">
-        <div class="post_text">
-            Text:_______________________________________________
-            </br>___________________________________________________
-        </div>
-        <div class="post_tags">
-            Tags:#______________________________________________
-        </div>
-        <img class= "like_icon" src="resources\pictures\like.png">
-        <img class="delete_icon" src="resources\pictures\delete.png">
-        <img class="edit_icon" src="resources\pictures\edit.png">
-    </div>
+            <img class="photo_post" data-target="photoLink" alt="photo post">
 
-    <div class="post">
-        <img class="profile_image_post" src="resources\pictures\camera.png" alt="profile image">
-        <div class="username_post">USERNAME</div>
-        <div class="post_data">data / time</div>
-        <img class="photo_post" src = "resources\pictures\landscape.jpg" alt = "photo post">
-        <div class="post_text">
-            Text:_______________________________________________
-            </br>___________________________________________________
-        </div>
-        <div class="post_tags">
-            Tags:#______________________________________________
-        </div>
-        <img class= "like_icon" src="resources\pictures\like.png">
-    </div>
+            <div class="post_tags" data-target="hashTags"></div>
 
-    <div class="post">
-        <img class="profile_image_post" src="resources\pictures\profile.jpg" alt="profile image">
-        <div class="username_post">USERNAME</div>
-        <div class="post_data">data / time</div>
-        <img class="photo_post" src = "resources\pictures\winter.jpg" alt = "photo post">
-        <div class="post_text">
-            Text:_______________________________________________
-            </br>___________________________________________________
-        </div>
-        <div class="post_tags">
-            Tags:#______________________________________________
-        </div>
-        <img class= "like_icon" src="resources\pictures\like.png">
-        <img class="delete_icon" src="resources\pictures\delete.png">
-        <img class="edit_icon" src="resources\pictures\edit.png">
-    </div>
+            <img class= "like_icon" src="resources/pictures/like.png" alt="like icon image">
 
-    <div class="post">
-        <img class="profile_image_post" src="resources\pictures\camera.png" alt="profile image">
-        <div class="username_post">USERNAME</div>
-        <div class="post_data">data / time</div>
-        <img class="photo_post" src = "resources\pictures\landscape.jpg" alt = "photo post">
-        <div class="post_text">
-            Text:_______________________________________________
-            </br>___________________________________________________
         </div>
-        <div class="post_tags">
-            Tags:#______________________________________________
-        </div>
-        <img class= "like_icon" src="resources\pictures\like.png">
-    </div>
+    </template>
 
-    <button class="show_button">SHOW 10 MORE</button>
+    <template id="template_my_post">
+        <div class="post" id="my">
+            <img class="profile_image_post" src="resources/pictures/profile.jpg" alt="profile image">
+
+            <div class="post_text" data-target="description"></div>
+
+            <div class="post_data" data-target="createdAt"></div>
+
+            <div class="username_post" data-target="author"></div>
+
+            <img class="photo_post" data-target="photoLink" alt="photo post">
+
+            <div class="post_tags" data-target="hashTags"></div>
+
+            <img class= "like_icon" src="resources/pictures/like.png" alt="like icon image">
+
+            <img class="delete_icon" src="resources/pictures/delete.png" alt="delete icon image">
+            <img class="edit_icon" src="resources/pictures/edit.png" alt="edit icon image">
+
+        </div>
+    </template>
+
+    <template id="button_show_template"><button class="show_button">SHOW 10 MORE</button></template>
+
 </main>
 
 <footer>

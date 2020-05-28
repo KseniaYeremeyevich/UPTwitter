@@ -1,10 +1,34 @@
-class TweetList {
+class Model {
     _tweets = [];
     _currentId;
+    _user;
+    /*
+        constructor(){
+            this._tweets = [];
+            this._currentId = 0;
+        }
+
+     */
 
     constructor(tweets) {
         this._tweets = tweets;
         this._currentId = this._tweets.length;
+    }
+
+    setUser(curUser){
+        this._user = curUser;
+    }
+
+    getCurrentId(){
+        return this._currentId;
+    }
+
+    getTweets(){
+        return this._tweets;
+    }
+
+    getUser(){
+        return this._user;
     }
 
     getPage(skip = 0, top = 10, filterConfig = undefined) {
@@ -70,9 +94,9 @@ class TweetList {
     }
 
     static validate(post) {
-        return TweetList._validateProperty(post, 'description') &&
-            TweetList._validateProperty(post, 'photoLink') &&
-            TweetList._validateProperty(post, 'hashTags');
+        return Model._validateProperty(post, 'description') &&
+            Model._validateProperty(post, 'photoLink') &&
+            Model._validateProperty(post, 'hashTags');
     }
 
     add (post) {
@@ -82,12 +106,12 @@ class TweetList {
             id,
             description: post.description,
             createdAt: date,
-            author: post.author,
+            author: this._user,
             photoLink: post.photoLink,
-            hashTags: post.hashTags.split(' '),
+            hashTags: post.hashTags,//.split(' '),
             likes: ['']
         };
-        if(TweetList.validate(newPost)){
+        if(Model.validate(newPost)){
             this._tweets.push(newPost);
             this._currentId = this._currentId + 1;
             return true;
@@ -100,7 +124,7 @@ class TweetList {
         let flag = false;
 
         for (let key in post) {
-            if (TweetList._validateProperty(post, key)) {
+            if (Model._validateProperty(post, key)) {
                 edPost[key] = post[key];
                 flag = true;
             } else flag = false;
@@ -133,7 +157,170 @@ class TweetList {
 
 }
 
-let tweets = new TweetList([
+class View {
+
+
+    static template;
+    static container = document.getElementById('posts_container');
+    static _user;
+    static _login;
+
+    static setUser(username){
+        this._user = username;
+    }
+
+    static setLogin(status){
+        this._login = status;
+    }
+
+    static getUser(){
+        return this._user;
+    }
+
+    static getLogin(){
+        return this._login;
+    }
+
+    static viewHeader(){
+        let template_header;
+        let header;
+        let node;
+
+        header = document.getElementById('header');
+        if(this._login){
+            template_header = document.getElementById('log_in');
+            node = document.importNode(template_header.content, true);
+            node.querySelector('[data-target="header_username"]').textContent = this._user;
+            header.appendChild(node);
+        } else {
+            template_header = document.getElementById('log_out');
+            node = document.importNode(template_header.content, true);
+            header.appendChild(node);
+        }
+
+    }
+
+    static viewNewPostForm(){
+        if(this._login){
+            let template_new_post = document.getElementById('template_new_post');
+            this.container = document.getElementById('posts_container');
+
+            let node = document.importNode(template_new_post.content, true);
+            node.querySelector('[data-target="new_post_username"]').textContent = this._user;
+            this.container.insertBefore(node, this.container.firstElementChild);
+
+        }
+    }
+
+    static viewMainPage(){
+        this.viewHeader();
+
+        if(tweets._currentId >= 10){
+            this.seeMore();
+        }
+
+    }
+
+
+    static fillInPost(post){
+
+        if(post.author === this._user){
+            this.template = document.getElementById('template_my_post');
+        } else {
+            this.template = document.getElementById('template_post');
+        }
+
+        let newNote = document.importNode(this.template.content, true);
+
+        View.fillItemData(newNote, post, 'description');
+        View.fillItemData(newNote, post, 'author');
+        View.fillItemData(newNote, post, 'createdAt');
+        View.fillItemData(newNote, post, 'photoLink');
+        View.fillItemData(newNote, post, 'hashTags');
+
+        return newNote;
+    }
+
+    static showPost(post){
+
+        let newNote = this.fillInPost(post);
+
+        newNote.firstElementChild.setAttribute('id', post.id);
+
+        this.container.insertBefore(newNote, this.container.firstElementChild);
+
+    }
+
+
+    static viewPostPage(posts){
+        posts.getTweets().forEach((post) => this.showPost(post));
+    }
+
+    static fillItemData(item, post, key) {
+        switch (key) {
+            case 'description':
+                item.querySelector('[data-target="description"]').textContent = post.description;
+                break;
+            case 'author':
+                item.querySelector('[data-target="author"]').textContent = post.author;
+                break;
+            case 'createdAt':
+                item.querySelector('[data-target="createdAt"]').textContent = post.createdAt;
+                break;
+            case 'photoLink':
+                item.querySelector('[data-target="photoLink"]').setAttribute('src', post.photoLink);
+                break;
+            case 'hashTags':
+                let strTags = "";
+                post.hashTags.forEach(tag => strTags += "#" + tag + " ");
+                item.querySelector('[data-target="hashTags"]').textContent = strTags;
+                break;
+        }
+
+    }
+
+
+    static addAllPosts(posts){
+        posts.getTweets().forEach((post) => this.addPost(posts, post));
+    }
+
+    static seeMore(){
+        this.template = document.getElementById('button_show_template');
+        this.container = document.getElementById('posts_container');
+        let newButton = document.importNode(this.template.content, true);
+        this.container.appendChild(newButton);
+    }
+
+    static addPost(posts, post){
+        if(posts.add(post) === true){
+
+            let id = posts.getCurrentId();
+
+            let newNote = this.fillInPost(posts.get(id.toString()));
+
+            newNote.firstElementChild.setAttribute('id', id);
+            this.container.insertBefore(newNote, this.container.firstElementChild);
+        }
+    }
+
+    static editPost(posts, id, post){
+        if(posts.edit(id, post) === true){
+
+            let newNote = this.fillInPost(posts.get(id));
+            document.getElementById(id).replaceWith(newNote);
+        }
+    }
+
+    static deletePost(id) {
+        document.getElementById(id)?.remove();
+    }
+
+
+}
+
+
+
+let tweets = new Model([
     {
         id: '1',
         description: 'Oh, I know that they’ll be better days\n' +
@@ -432,153 +619,45 @@ let tweets = new TweetList([
     }
 ]);
 
-console.log('GET PAGE function');
-console.log('\n');
-
-console.log('10 last posts');
-console.log(tweets.getPage());
-console.log('\n');
-
-console.log('Next 5 posts');
-console.log(tweets.getPage(10, 5));
-console.log('\n');
-
-console.log('Posts of one author');
-console.log(tweets.getPage(0, 10, {username: 'April'}));
-console.log('\n');
-
-console.log('Posts of one author (not full name)');
-console.log(tweets.getPage(0, 10, {username: 'Ks'}));
-console.log('\n');
-
-console.log('Posts from 6 april');
-console.log(tweets.getPage(0, 10, {dateFrom: '2020-04-06'}));
-console.log('\n');
-
-
-console.log('Posts with tag');
-console.log(tweets.getPage(0, 10, {tags: ['trip']}));
-console.log('\n');
-
-console.log('Posts with several tags');
-console.log(tweets.getPage(0, 10, {tags: ['france', 'sea']}));
-console.log('\n');
-
-console.log('GET function');
-console.log('\n');
-
-console.log('Post with id = 11');
-console.log(tweets.get('11'));
-console.log('\n');
-
-console.log('Post with id = 26');
-console.log(tweets.get('26'));
-console.log('\n');
-
-console.log('VALIDATE function');
-console.log('\n');
-
-console.log('Validation');
-console.log(TweetList.validate({id: '394',
-    description: "validation", createdAt: new Date(), author: 'user', photoLink: 'URL', hashTags: ['check'], likes: []}));
-console.log('\n');
-
-console.log('Validation with wrong tag');
-console.log(TweetList.validate({id: '395',
-    description: "validation", createdAt: new Date(), author: 'user', photoLink: 'URL', hashTags: ['checkcheckcheckcheck'], likes: []}));
-console.log('\n');
-
-console.log('ADD function');
-console.log('\n');
-
-console.log('Add new post');
-console.log(tweets.add({
+let post = {
     description: 'Более 76 тыс. человек во всем мире уже излечились от заболевания, спровоцированного новым коронавирусом, тогда как количество смертей превысило 6,4 тыс.',
-    author: 'Иванов Иван',
-    photoLink: 'https://www.pressball.by/images/stories/2020/03/20200310231542.jpg',
-    hashTags: 'coronavirus'
-}));
-console.log(tweets.get('21'));
-console.log('\n');
+    photoLink: 'https://deita.ru/media/images/paris-2499022_960_720.2e16d0ba.fill-950x690-c100.jpg',
+    hashTags: ['coronavirus', 'trip']
+};
 
-console.log('EDIT function');
-console.log('\n');
+let post2 = {
 
-console.log('Edit post with id = 15');
-console.log(tweets.edit('15', {photoLink: 'https://github.com/KseniaYeremeyevich/UPTwitter'}));
-console.log(tweets.get('15'));
-console.log('\n');
+    photoLink: 'https://hospitality-on.com/sites/default/files/2017-10/paris-1836415_1920.jpg',
+    hashTags: ['EditedPost']
+};
 
-console.log('Edit post with id = 15');
-console.log(tweets.edit('15', {hashTags: [ 'summersummersummersummer']}));
-console.log(tweets.get('15'));
-console.log('\n');
+let view;
 
-console.log('Edit post with id = 10');
-console.log(tweets.edit('10', {photoLink: 'https://github.com/KseniaYeremeyevich/UPTwitter', hashTags: [ 'spring' , 'minsk']}));
-console.log(tweets.get('10'));
-console.log('\n');
+window.onload = () => {
 
-console.log('REMOVE POST function');
-console.log('\n');
+    view = new View();
 
-console.log('Remove post with id = 17');
-console.log(tweets.remove('17'));
-console.log('\n');
+    View.setLogin(true);
+    //View.setLogin(false);
 
-console.log('5 last posts (without 17)');
-console.log(tweets.getPage(0, 5));
-console.log('\n');
+    View.setUser("Ksenia");
+    tweets.setUser("Ksenia");
 
-console.log('ADD ALL function');
-console.log('\n');
+    View.viewMainPage();
 
-console.log('Add tweets in collection');
-let newTweets = [
-    {
-        description: 'Более 76 тыс. человек во всем мире уже излечились от заболевания, спровоцированного новым коронавирусом, тогда как количество смертей превысило 6,4 тыс.',
-        author: 'Иванов Иван',
-        photoLink: 'https://www.pressball.by/images/stories/2020/03/20200310231542.jpg',
-        hashTags: 'coronavirus',
-        likes: []
-    },
+    View.viewPostPage(tweets);
 
-    {
-        description: 'Более 76 тыс. человек во всем мире уже излечились от заболевания, спровоцированного новым коронавирусом, тогда как количество смертей превысило 6,4 тыс.',
-        author: 'Иванов Иван',
-        photoLink: 1432,
-        hashTags: 'coronavirus',
-        likes: []
-    },
+    View.addPost(tweets, post);
+    View.editPost(tweets, "19", post2);
+    View.deletePost('17');
 
-    {
-        description: 1234,
-        author: 'Иванов Иван',
-        photoLink: 'https://www.pressball.by/images/stories/2020/03/20200310231542.jpg',
-        hashTags: 'coronavirus',
-        likes: []
-    },
+    View.viewNewPostForm();
 
-    {
-        description: "validation",
-        createdAt: new Date(),
-        author: 'user',
-        photoLink: 'URL',
-        hashTags: 'check',
-        likes: []
-    }
-];
+};
 
-console.log(tweets.addAll(newTweets));
-console.log('Page after adding');
-console.log(tweets.getPage(0 , 5));
-console.log('\n');
 
-console.log('CLEAR function');
-console.log('\n');
 
-console.log('Clear collection');
-console.log(tweets.clear());
-console.log('Collection: ');
-console.log(tweets.getPage());
-console.log('\n');
+
+
+
+
